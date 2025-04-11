@@ -22,7 +22,6 @@ class CommandeController extends AbstractController
         Request $request,
         CreateCommandeUseCase $useCase
     ): JsonResponse {
-        /** @var User $client */
         $client = $this->getUser();
         $data = json_decode($request->getContent(), true);
 

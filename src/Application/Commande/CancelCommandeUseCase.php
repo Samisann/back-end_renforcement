@@ -12,6 +12,8 @@ class CancelCommandeUseCase
 
     public function execute(Commande $commande): void
     {
+
+
         if (!in_array($commande->getStatut(), [
             StatutCommande::CART, StatutCommande::EN_ATTENTE
         ])) {

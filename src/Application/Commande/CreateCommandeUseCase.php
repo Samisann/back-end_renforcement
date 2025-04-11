@@ -14,6 +14,7 @@ class CreateCommandeUseCase
 
     public function execute(User $client, string $modePaiement, array $lignesData): Commande
     {
+
         $commande = new Commande($client, $modePaiement);
         $commande->setStatut(StatutCommande::CART);
 
