@@ -28,7 +28,7 @@ class Commande
     #[ORM\JoinColumn(nullable: false)]
     private User $client;
 
-    #[ORM\OneToMany(mappedBy: "commande", targetEntity: Reservation::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(targetEntity: Reservation::class, mappedBy: "commande", cascade: ['persist', 'remove'])]
     private Collection $reservations;
 
     public function __construct(User $client, string $modePaiement)
@@ -81,5 +81,26 @@ class Commande
             $this->reservations->add($reservation);
             $reservation->setCommande($this);
         }
+    }
+    public function annuler(): void
+    {
+        if (!in_array($this->statut, [StatutCommande::CART, StatutCommande::EN_ATTENTE])) {
+            throw new \LogicException("La commande ne peut pas être annulée.");
+        }
+
+        $this->statut = StatutCommande::ANNULEE;
+    }
+    public function confirmer(): void
+    {
+        if ($this->statut !== StatutCommande::CART) {
+            throw new \LogicException("Seules les commandes dans le 'panier' peuvent être confirmées.");
+        }
+
+        $this->statut = StatutCommande::VALIDEE;
+    }
+    public function ajouterReservation(Vehicle $vehicule, \DateTimeImmutable $dateDebut, \DateTimeImmutable $dateFin): void
+    {
+        $reservation = new Reservation($vehicule, $dateDebut, $dateFin);
+        $this->reservations->add($reservation);
     }
 }
